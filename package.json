@@ -26,7 +26,8 @@
     "unlink": "npm unlink",
     "local-install": "npm run build && npm run link && chmod +x dist/cli.js",
     "format": "prettier --write \"src/**/*.{ts,js}\" \"templates/**/*.{ts,js}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,js}\" \"templates/**/*.{ts,js}\""
+    "format:check": "prettier --check \"src/**/*.{ts,js}\" \"templates/**/*.{ts,js}\"",
+    "release": "release-it"
   },
   "keywords": [
     "typescript",
@@ -62,6 +63,7 @@
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^20.11.19",
     "prettier": "^3.2.5",
+    "release-it": "^18.1.2",
     "typescript": "^5.3.3"
   }
 }

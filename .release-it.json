@@ -1,0 +1,25 @@
+{
+    "git": {
+        "commitMessage": "chore: release v${version}",
+        "tagName": "v${version}",
+        "requireCleanWorkingDir": true,
+        "changelog": "git log --pretty=format:\"* %s (%h)\" ${from}...${to}"
+    },
+    "github": {
+        "release": true,
+        "releaseName": "Release v${version}",
+        "draft": false,
+        "tokenRef": "GITHUB_TOKEN"
+    },
+    "npm": {
+        "publish": true
+    },
+    "hooks": {
+        "before:init": [
+            "pnpm run build"
+        ],
+        "after:bump": "pnpm run build",
+        "after:git:release": "echo Successfully created git tag v${version}",
+        "after:release": "echo Successfully released v${version} to npm."
+    }
+}
