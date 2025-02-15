@@ -1,6 +1,6 @@
 {
   "name": "tshack-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A lightweight and efficient CLI tool for rapidly spinning up TypeScript playgrounds",
   "type": "module",
   "main": "dist/cli.js",
