@@ -5,7 +5,7 @@
   "type": "module",
   "main": "dist/cli.js",
   "bin": {
-    "tshack": "./dist/cli.js"
+    "tshack-cli": "./dist/cli.js"
   },
   "files": [
     "dist/",
@@ -20,6 +20,7 @@
     "clean": "rm -rf dist",
     "prebuild": "npm run clean",
     "prepare": "npm run build",
+    "prepack": "chmod +x dist/cli.js",
     "postinstall": "chmod +x ./dist/cli.js",
     "link": "npm link",
     "unlink": "npm unlink",
