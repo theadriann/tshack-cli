@@ -1,14 +1,14 @@
-import { execa } from "execa";
 import chalk from "chalk";
 import chokidar from "chokidar";
+import { execa } from "execa";
 import fs from "fs-extra";
 import path from "path";
+import { ConfigManager } from "../config.js";
+import { openInEditor } from "../editor.js";
+import { applyConfigOverrides } from "../utils/config.js";
 import { createStandaloneFile } from "../utils/files.js";
 import { getScriptPath } from "../utils/paths.js";
 import { promptForProjectName } from "../utils/prompt.js";
-import { ConfigManager } from "../config.js";
-import { installDependencies } from "../dependencies.js";
-import { openInEditor } from "../editor.js";
 
 const configManager = new ConfigManager();
 
@@ -114,15 +114,7 @@ export async function handleLiveCommand(options: LiveCommandOptions = {}): Promi
         createStandaloneFile(filePath);
     }
 
-    // Override config values if provided in options
-    if (options.editor) {
-        configManager.getConfig().editor.command = options.editor;
-    }
-
-    if (options.packageManager) {
-        configManager.getConfig().packageManager = options.packageManager;
-    }
-
+    applyConfigOverrides(options);
     await openInEditor(filePath);
     console.log(chalk.green(`✅ Standalone file ready: ${filePath}`));
 
