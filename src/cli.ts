@@ -5,7 +5,7 @@ import { handleLiveCommand, LiveCommandOptions } from "./commands/live.js";
 
 const program = new Command();
 
-program.name("tshack").description("⚡ Quick TypeScript playground CLI").version("1.0.0");
+program.name("tshack").description("⚡ Quick TypeScript playground CLI").version("0.1.0");
 
 program
     .command("new [name]")

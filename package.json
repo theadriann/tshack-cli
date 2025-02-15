@@ -1,12 +1,18 @@
 {
   "name": "tshack-cli",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.1.0",
+  "description": "A lightweight and efficient CLI tool for rapidly spinning up TypeScript playgrounds",
   "type": "module",
   "main": "dist/cli.js",
   "bin": {
     "tshack": "./dist/cli.js"
   },
+  "files": [
+    "dist/",
+    "templates/",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
@@ -14,15 +20,31 @@
     "clean": "rm -rf dist",
     "prebuild": "npm run clean",
     "prepare": "npm run build",
+    "postinstall": "chmod +x ./dist/cli.js",
     "link": "npm link",
     "unlink": "npm unlink",
     "local-install": "npm run build && npm run link && chmod +x dist/cli.js",
     "format": "prettier --write \"src/**/*.{ts,js}\" \"templates/**/*.{ts,js}\"",
     "format:check": "prettier --check \"src/**/*.{ts,js}\" \"templates/**/*.{ts,js}\""
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "typescript",
+    "cli",
+    "playground",
+    "development",
+    "prototyping",
+    "vscode"
+  ],
+  "author": "theadriann",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/theadriann/tshack-cli"
+  },
+  "bugs": {
+    "url": "https://github.com/theadriann/tshack-cli/issues"
+  },
+  "homepage": "https://github.com/theadriann/tshack-cli#readme",
   "packageManager": "pnpm@8.15.9+sha512.499434c9d8fdd1a2794ebf4552b3b25c0a633abcee5bb15e7b5de90f32f47b513aca98cd5cfd001c31f0db454bc3804edccd578501e4ca293a6816166bbd9f81",
   "dependencies": {
     "chalk": "^5.4.1",
