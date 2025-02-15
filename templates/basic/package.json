@@ -1,0 +1,13 @@
+{
+    "name": "ts-playground",
+    "version": "1.0.0",
+    "main": "index.ts",
+    "scripts": {
+        "start": "ts-node index.ts"
+    },
+    "devDependencies": {
+        "typescript": "^5.2.0",
+        "ts-node": "^10.9.1",
+        "@types/node": "^18.0.0"
+    }
+}
