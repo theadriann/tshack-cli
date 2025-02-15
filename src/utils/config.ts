@@ -29,6 +29,6 @@ export function addCommonConfigOptions(command: Command): Command {
         .option("--editor <editor>", "Override the editor command to use (e.g., code, vim, nano)")
         .option(
             "--packageManager <manager>",
-            "Override the package manager to use (e.g., npm, pnpm, yarn)"
+            "Override the package manager to use (e.g., npm, pnpm, yarn, bun)"
         );
 }

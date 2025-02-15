@@ -4,6 +4,7 @@ import { handleNewCommand, NewCommandOptions } from "./commands/new.js";
 import { handleLiveCommand, LiveCommandOptions } from "./commands/live.js";
 import { handleListCommand, ListCommandOptions } from "./commands/list.js";
 import { handleDeleteCommand, DeleteCommandOptions } from "./commands/delete.js";
+import { handleSetupCommand, SetupCommandOptions } from "./commands/setup.js";
 import { addCommonConfigOptions } from "./utils/config.js";
 import fs from "fs-extra";
 import path from "path";
@@ -70,6 +71,20 @@ program
         handleDeleteCommand({
             name,
             force: options.force,
+        })
+    );
+
+program
+    .command("setup")
+    .description("Configure tshack CLI settings")
+    .option("--editor <editor>", "Set the default editor command")
+    .option("--packageManager <manager>", "Set the default package manager")
+    .option("--defaultWorkspacePath <path>", "Set the default workspace path")
+    .action((options: SetupCommandOptions) =>
+        handleSetupCommand({
+            editor: options.editor,
+            packageManager: options.packageManager,
+            defaultWorkspacePath: options.defaultWorkspacePath,
         })
     );
 

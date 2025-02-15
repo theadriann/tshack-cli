@@ -1,6 +1,7 @@
 import fs from "fs-extra";
 import path from "path";
 import os from "os";
+import chalk from "chalk";
 
 interface EditorConfig {
     command: string;
@@ -55,6 +56,20 @@ export class ConfigManager {
 
     public getConfig(): TshackConfig {
         return this.config;
+    }
+
+    /**
+     * Saves the current configuration to disk
+     */
+    public saveConfig(): void {
+        try {
+            fs.writeJSONSync(this.configPath, this.config, {
+                spaces: 2,
+            });
+        } catch (error) {
+            console.error(chalk.red("Failed to save configuration:"), error);
+            throw error;
+        }
     }
 
     public getWorkspacePath(name: string): string {
