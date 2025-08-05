@@ -28,7 +28,9 @@ async function extractDependencies(filePath: string): Promise<string[]> {
     const importRegex = /from\s+['"]([^./][^'"]+)['"]/g;
     const packages = new Set<string>();
 
-    let match;
+    let match: RegExpExecArray | null = null;
+
+    // biome-ignore lint/suspicious/noAssignInExpressions: its ok
     while ((match = importRegex.exec(content)) !== null) {
         const packageName = match[1].split("/")[0];
         packages.add(packageName);
@@ -77,21 +79,61 @@ async function installMissingDependencies(filePath: string): Promise<void> {
     }
 }
 
+let currentProcess: ReturnType<typeof execa> | null = null;
+let executeTimeout: NodeJS.Timeout | null = null;
+
 /**
- * Executes a TypeScript file using tsx
+ * Executes a TypeScript file using tsx with proper process management
  * @param filePath Path to the TypeScript file
  */
 async function executeFile(filePath: string): Promise<void> {
-    try {
-        await installMissingDependencies(filePath);
-        console.log(chalk.blue(`🚀 Executing ${path.basename(filePath)}...`));
-        await execa("tsx", ["watch", filePath], {
-            stdio: "inherit",
-            env: { ...process.env, FORCE_COLOR: "true" },
-        });
-    } catch (error) {
-        console.error(chalk.red("❌ Execution failed:"), error);
+    // Clear any pending execution
+    if (executeTimeout) {
+        clearTimeout(executeTimeout);
     }
+
+    // Debounce rapid file changes (300ms delay)
+    executeTimeout = setTimeout(async () => {
+        try {
+            // Kill previous process if running
+            if (currentProcess && !currentProcess.killed) {
+                console.log(chalk.yellow("🔄 Restarting..."));
+                currentProcess.kill("SIGTERM");
+                // Give the process a moment to clean up
+                await new Promise((resolve) => setTimeout(resolve, 100));
+                currentProcess = null;
+            }
+
+            await installMissingDependencies(filePath);
+
+            console.log(chalk.blue(`\n🚀 Executing ${path.basename(filePath)}...`));
+            console.log(chalk.gray("─".repeat(50)));
+
+            // Execute without watch flag - we handle watching ourselves
+            currentProcess = execa("tsx", [filePath], {
+                stdio: "inherit",
+                env: { ...process.env, FORCE_COLOR: "true" },
+            });
+
+            await currentProcess;
+            console.log(chalk.gray("─".repeat(50)));
+            console.log(chalk.green("✅ Execution completed"));
+            console.log(chalk.gray("Watching for changes...\n"));
+        } catch (error) {
+            if (
+                error &&
+                typeof error === "object" &&
+                "signal" in error &&
+                (error.signal === "SIGTERM" || error.signal === "SIGKILL")
+            ) {
+                // Process was killed for restart - this is expected
+                return;
+            }
+            console.log(chalk.gray("─".repeat(50)));
+            console.error(chalk.red("❌ Execution failed"));
+            console.log(chalk.gray("Watching for changes...\n"));
+        }
+    }, 300);
 }
 
 /**
@@ -118,18 +160,38 @@ export async function handleLiveCommand(options: LiveCommandOptions = {}): Promi
     await openInEditor(filePath);
     console.log(chalk.green(`✅ Standalone file ready: ${filePath}`));
 
+    console.log(chalk.cyan("🔍 Starting live execution mode..."));
+    console.log(chalk.gray(`Watching: ${filePath}`));
+    console.log(chalk.gray("Press Ctrl+C to stop"));
+
     // Watch for file changes and execute
     const watcher = chokidar.watch(filePath, {
         persistent: true,
         ignoreInitial: false,
+        awaitWriteFinish: {
+            stabilityThreshold: 100,
+            pollInterval: 50,
+        },
     });
 
-    // watcher.on("add", executeFile);
+    // Execute on initial add and changes
+    watcher.on("add", executeFile);
     watcher.on("change", executeFile);
 
     // Handle process termination
     process.on("SIGINT", () => {
         console.log(chalk.yellow("\n👋 Stopping file execution..."));
+
+        // Clean up timeout
+        if (executeTimeout) {
+            clearTimeout(executeTimeout);
+        }
+
+        // Kill current process
+        if (currentProcess && !currentProcess.killed) {
+            currentProcess.kill();
+        }
+
         watcher.close();
         process.exit(0);
     });

@@ -15,7 +15,7 @@ export interface TshackConfig {
 
 const DEFAULT_CONFIG: TshackConfig = {
     editor: {
-        command: "code",
+        command: "cursor",
     },
     packageManager: "pnpm",
     defaultWorkspacePath: path.join(os.homedir(), "ts-hacks"),

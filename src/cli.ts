@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 import { Command } from "commander";
-import { handleNewCommand, NewCommandOptions } from "./commands/new.js";
-import { handleLiveCommand, LiveCommandOptions } from "./commands/live.js";
-import { handleListCommand, ListCommandOptions } from "./commands/list.js";
-import { handleDeleteCommand, DeleteCommandOptions } from "./commands/delete.js";
-import { handleSetupCommand, SetupCommandOptions } from "./commands/setup.js";
-import { addCommonConfigOptions } from "./utils/config.js";
 import fs from "fs-extra";
-import path from "path";
-import { fileURLToPath } from "url";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { handleDeleteCommand, type DeleteCommandOptions } from "./commands/delete.js";
+import { handleListCommand, type ListCommandOptions } from "./commands/list.js";
+import { handleLiveCommand, type LiveCommandOptions } from "./commands/live.js";
+import { handleNewCommand, type NewCommandOptions } from "./commands/new.js";
+import { handleSetupCommand, type SetupCommandOptions } from "./commands/setup.js";
+import { addCommonConfigOptions } from "./utils/config.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

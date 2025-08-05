@@ -42,7 +42,7 @@ export async function handleSetupCommand(options: SetupCommandOptions = {}): Pro
                     { name: "npm", value: "npm" },
                     { name: "pnpm", value: "pnpm" },
                     { name: "yarn", value: "yarn" },
-                    { name: "bun", value: "bun" }
+                    { name: "bun", value: "bun" },
                 ],
                 default: 0,
             },
@@ -72,4 +72,4 @@ export async function handleSetupCommand(options: SetupCommandOptions = {}): Pro
     console.log(chalk.green(`  • Package Manager: ${updatedConfig.packageManager}`));
     console.log(chalk.green(`  • Default Workspace: ${updatedConfig.defaultWorkspacePath}`));
     console.log();
-} 
+}
